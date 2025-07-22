@@ -1,0 +1,708 @@
+// ตัวแปรสำหรับเก็บข้อมูล
+const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE'; // ใส่ ID ของ Google Sheets
+const DRIVE_FOLDER_ID = 'YOUR_DRIVE_FOLDER_ID_HERE'; // ใส่ ID ของ Google Drive Folder
+
+// ข้อมูลนักเรียน
+const STUDENTS_DATA = {
+  grade10: [
+    {id: '70652368', name: 'สามเณรทนอ่อง ลุงออน', loginCode: 'TN2368'},
+    {id: '70652370', name: 'สามเณรธีรดา', loginCode: 'TR2370'},
+    {id: '70652372', name: 'สามเณรภัทราวุฒ ปันสืบ', loginCode: 'PT2372'},
+    {id: '70652373', name: 'สามเณรรัตนภูมิ ไทยใหญ่', loginCode: 'RT2373'},
+    {id: '70652376', name: 'สามเณรสมชาย ลุงหล่อ', loginCode: 'SM2376'},
+    {id: '70652377', name: 'สามเณรสมพง ลุงติ', loginCode: 'SP2377'},
+    {id: '70652380', name: 'สามเณรอนมาส กมลศิลป์', loginCode: 'AN2380'},
+    {id: '70652381', name: 'สามเณรอภินันท์ คําขา', loginCode: 'AP2381'},
+    {id: '70652384', name: 'สามเณรทุนวัน อินใจ', loginCode: 'TW2384'},
+    {id: '70652388', name: 'สามเณรปรานต์ ลาวเชิน', loginCode: 'PR2388'},
+    {id: '70672450', name: 'สามเณรตาน ลุงละ', loginCode: 'TN2450'},
+    {id: '70672451', name: 'สามเณรเมือง ลุงต๊ะ', loginCode: 'MG2451'},
+    {id: '70672452', name: 'สามเณรทองคำ', loginCode: 'TK2452'},
+    {id: '70672453', name: 'สามเณรสายทุน', loginCode: 'ST2453'},
+    {id: '70672454', name: 'สามเณรหน่มไต', loginCode: 'NT2454'},
+    {id: '70672455', name: 'สามเณรแสงติบ', loginCode: 'ST2455'},
+    {id: '70672456', name: 'สามเณรกร ลุงแห่น', loginCode: 'KR2456'},
+    {id: '70672458', name: 'สามเณรปืนฟ้า', loginCode: 'PF2458'},
+    {id: '70672459', name: 'สามเณรเมืองเดือน', loginCode: 'MD2459'},
+    {id: '70672460', name: 'สามเณรแลงป่าง', loginCode: 'LP2460'},
+    {id: '70672461', name: 'สามเณรหลาวแลง', loginCode: 'LL2461'},
+    {id: '70672462', name: 'สามเณรสายแลง', loginCode: 'SL2462'},
+    {id: '70682463', name: 'พระหนุ่มเครือ ปญญาวโร (ปัญญากร)', loginCode: 'NK2463'}
+  ],
+  grade11: [
+    {id: '70642342', name: 'สามเณรกฤติเดช นิวันติ', loginCode: 'KR2342'},
+    {id: '70642346', name: 'สามเณรพัฒนไชย คามนา', loginCode: 'PT2346'},
+    {id: '70642350', name: 'สามเณรศิวัช เงินสุข', loginCode: 'SW2350'},
+    {id: '70642351', name: 'สามเณรหนุ่มเคอะ จิงนะ', loginCode: 'NK2351'},
+    {id: '70642355', name: 'สามเณรจามทุน', loginCode: 'JM2355'},
+    {id: '70642356', name: 'สามเณรหล้าส่วย', loginCode: 'LS2356'},
+    {id: '70652362', name: 'สามเณรนภัส สมรัก', loginCode: 'NP2362'},
+    {id: '70672421', name: 'สามเณรอาทิตย์ น้อยสาม', loginCode: 'AT2421'},
+    {id: '70672422', name: 'สามเณรยศภัทร สินหมี', loginCode: 'YS2422'},
+    {id: '70672444', name: 'สามเณรธีรภัทร นามวงษา', loginCode: 'TP2444'}
+  ],
+  grade12: [
+    {id: '70632311', name: 'สามเณรจิรายุส นามแสง', loginCode: 'JR2311'},
+    {id: '70632313', name: 'สามเณรธนกร แข็งขัน', loginCode: 'TK2313'},
+    {id: '70632314', name: 'สามเณรธนกฤต แข้งขัน', loginCode: 'TG2314'},
+    {id: '70632315', name: 'สามเณรธนเดช ยาเหมย', loginCode: 'TD2315'},
+    {id: '70632321', name: 'พระวี มหาวีโร (คําแลง)', loginCode: 'WI2321'},
+    {id: '70632323', name: 'สามเณรสมชาย ลงทุน', loginCode: 'SC2323'},
+    {id: '70632328', name: 'สามเณรแสงบุญ', loginCode: 'SB2328'},
+    {id: '70632330', name: 'สามเณรหม่อง คําน้อย', loginCode: 'MO2330'},
+    {id: '70632333', name: 'สามเณรอัครพนธ์ สานา', loginCode: 'AK2333'},
+    {id: '70632336', name: 'สามเณรหล่ คํานวล', loginCode: 'LA2336'},
+    {id: '70642340', name: 'สามเณรราชศักดิ ผดงชีพ', loginCode: 'RS2340'},
+    {id: '70652361', name: 'สามเณรอรรถวัต กันทะนะ', loginCode: 'AW2361'},
+    {id: '70662392', name: 'สามเณรกตัญญ หลวงแยง', loginCode: 'KT2392'},
+    {id: '70632322', name: 'สามเณรศรัณยู สุวรรณ', loginCode: 'SR2322'}
+  ]
+};
+
+// ฟังก์ชันหลักสำหรับ Web App
+function doGet(e) {
+  const action = e.parameter.action;
+  
+  switch(action) {
+    case 'getStudents':
+      return getStudents(e.parameter.grade);
+    case 'getGrades':
+      return getGrades(e.parameter.grade);
+    case 'getAssignments':
+      return getAssignments(e.parameter.grade);
+    case 'getSubmissions':
+      return getSubmissions(e.parameter.assignmentId);
+    default:
+      return ContentService.createTextOutput('Invalid action');
+  }
+}
+
+function doPost(e) {
+  const action = e.parameter.action;
+  const data = JSON.parse(e.postData.contents);
+  
+  switch(action) {
+    case 'saveGrades':
+      return saveGrades(data);
+    case 'addAssignment':
+      return addAssignment(data);
+    case 'submitAssignment':
+      return submitAssignment(data);
+    case 'deleteAssignment':
+      return deleteAssignment(data.assignmentId);
+    case 'updateGrade':
+      return updateGrade(data);
+    default:
+      return ContentService.createTextOutput('Invalid action');
+  }
+}
+
+// ฟังก์ชันจัดการข้อมูลนักเรียน
+function getStudents(grade) {
+  try {
+    const students = STUDENTS_DATA[grade] || [];
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        data: students
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ฟังก์ชันจัดการเกรด
+function getGrades(grade) {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = ss.getSheetByName(`Grades_${grade}`);
+    
+    // สร้าง sheet ใหม่ถ้าไม่มี
+    if (!sheet) {
+      sheet = ss.insertSheet(`Grades_${grade}`);
+      initializeGradeSheet(sheet, grade);
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const grades = {};
+    
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      const studentId = row[0];
+      grades[studentId] = {};
+      
+      for (let j = 2; j < headers.length; j++) {
+        grades[studentId][headers[j]] = row[j] || '';
+      }
+    }
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        data: grades
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function saveGrades(data) {
+  try {
+    const { grade, grades } = data;
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = ss.getSheetByName(`Grades_${grade}`);
+    
+    if (!sheet) {
+      sheet = ss.insertSheet(`Grades_${grade}`);
+      initializeGradeSheet(sheet, grade);
+    }
+    
+    const students = STUDENTS_DATA[grade];
+    const examRounds = ['สอบกลางภาค', 'สอบปลายภาค', 'เก็บคะแนนบทที่ 1', 'เก็บคะแนนบทที่ 2'];
+    
+    // Clear existing data
+    sheet.clear();
+    
+    // Set headers
+    const headers = ['รหัสนักเรียน', 'ชื่อนักเรียน', ...examRounds, 'เกรดรวม'];
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    
+    // Set data
+    const rows = students.map(student => {
+      const studentGrades = grades[student.id] || {};
+      const gradeValues = examRounds.map(round => studentGrades[round] || '');
+      const average = calculateAverage(gradeValues);
+      const letterGrade = getLetterGrade(average);
+      
+      return [student.id, student.name, ...gradeValues, letterGrade];
+    });
+    
+    if (rows.length > 0) {
+      sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+    }
+    
+    // Format sheet
+    formatGradeSheet(sheet);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        message: 'บันทึกเกรดเรียบร้อยแล้ว'
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function updateGrade(data) {
+  try {
+    const { grade, studentId, examRound, score } = data;
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = ss.getSheetByName(`Grades_${grade}`);
+    
+    if (!sheet) {
+      sheet = ss.insertSheet(`Grades_${grade}`);
+      initializeGradeSheet(sheet, grade);
+    }
+    
+    const dataRange = sheet.getDataRange();
+    const values = dataRange.getValues();
+    const headers = values[0];
+    
+    // Find student row
+    let studentRow = -1;
+    for (let i = 1; i < values.length; i++) {
+      if (values[i][0] === studentId) {
+        studentRow = i + 1;
+        break;
+      }
+    }
+    
+    // Find exam round column
+    const examRoundCol = headers.indexOf(examRound) + 1;
+    
+    if (studentRow > 0 && examRoundCol > 0) {
+      sheet.getRange(studentRow, examRoundCol).setValue(score);
+      
+      // Recalculate grade
+      const gradeValues = [];
+      for (let j = 3; j <= headers.length - 1; j++) {
+        const value = sheet.getRange(studentRow, j).getValue();
+        if (value !== '') gradeValues.push(parseFloat(value));
+      }
+      
+      const average = gradeValues.length > 0 ? gradeValues.reduce((a, b) => a + b) / gradeValues.length : 0;
+      const letterGrade = getLetterGrade(average);
+      sheet.getRange(studentRow, headers.length).setValue(letterGrade);
+    }
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        message: 'อัปเดตคะแนนเรียบร้อยแล้ว'
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ฟังก์ชันจัดการงาน
+function getAssignments(grade) {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = ss.getSheetByName(`Assignments_${grade}`);
+    
+    if (!sheet) {
+      sheet = ss.insertSheet(`Assignments_${grade}`);
+      initializeAssignmentSheet(sheet);
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          success: true,
+          data: []
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const assignments = [];
+    
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      assignments.push({
+        id: row[0],
+        title: row[1],
+        description: row[2],
+        subject: row[3],
+        dueDate: row[4],
+        selectedStudents: row[5] ? row[5].split(',') : [],
+        createdAt: row[6]
+      });
+    }
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        data: assignments
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function addAssignment(data) {
+  try {
+    const { grade, title, description, subject, dueDate, selectedStudents } = data;
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = ss.getSheetByName(`Assignments_${grade}`);
+    
+    if (!sheet) {
+      sheet = ss.insertSheet(`Assignments_${grade}`);
+      initializeAssignmentSheet(sheet);
+    }
+    
+    const assignmentId = Utilities.getUuid();
+    const createdAt = new Date().toISOString().split('T')[0];
+    
+    sheet.appendRow([
+      assignmentId,
+      title,
+      description,
+      subject,
+      dueDate,
+      selectedStudents.join(','),
+      createdAt
+    ]);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        message: 'เพิ่มงานเรียบร้อยแล้ว',
+        assignmentId: assignmentId
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function deleteAssignment(assignmentId) {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheets = ss.getSheets();
+    
+    for (let sheet of sheets) {
+      if (sheet.getName().startsWith('Assignments_')) {
+        const data = sheet.getDataRange().getValues();
+        for (let i = 1; i < data.length; i++) {
+          if (data[i][0] === assignmentId) {
+            sheet.deleteRow(i + 1);
+            break;
+          }
+        }
+      }
+    }
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        message: 'ลบงานเรียบร้อยแล้ว'
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ฟังก์ชันจัดการการส่งงาน
+function getSubmissions(assignmentId) {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = ss.getSheetByName('Submissions');
+    
+    if (!sheet) {
+      sheet = ss.insertSheet('Submissions');
+      initializeSubmissionSheet(sheet);
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          success: true,
+          data: []
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const submissions = [];
+    
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      if (row[1] === assignmentId) {
+        submissions.push({
+          id: row[0],
+          assignmentId: row[1],
+          studentId: row[2],
+          fileName: row[3],
+          fileUrl: row[4],
+          submittedAt: row[5],
+          status: row[6]
+        });
+      }
+    }
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        data: submissions
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function submitAssignment(data) {
+  try {
+    const { assignmentId, studentId, fileName, fileContent } = data;
+    
+    // Save file to Google Drive
+    const folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+    const blob = Utilities.newBlob(Utilities.base64Decode(fileContent), 'application/octet-stream', fileName);
+    const file = folder.createFile(blob);
+    
+    // Save submission record
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = ss.getSheetByName('Submissions');
+    
+    if (!sheet) {
+      sheet = ss.insertSheet('Submissions');
+      initializeSubmissionSheet(sheet);
+    }
+    
+    const submissionId = Utilities.getUuid();
+    const submittedAt = new Date().toISOString();
+    
+    sheet.appendRow([
+      submissionId,
+      assignmentId,
+      studentId,
+      fileName,
+      file.getUrl(),
+      submittedAt,
+      'submitted'
+    ]);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        message: 'ส่งงานเรียบร้อยแล้ว',
+        submissionId: submissionId
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ฟังก์ชันช่วยเหลือ
+function initializeGradeSheet(sheet, grade) {
+  const students = STUDENTS_DATA[grade];
+  const examRounds = ['สอบกลางภาค', 'สอบปลายภาค', 'เก็บคะแนนบทที่ 1', 'เก็บคะแนนบทที่ 2'];
+  const headers = ['รหัสนักเรียน', 'ชื่อนักเรียน', ...examRounds, 'เกรดรวม'];
+  
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  
+  const rows = students.map(student => [student.id, student.name, '', '', '', '', '']);
+  if (rows.length > 0) {
+    sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+  }
+  
+  formatGradeSheet(sheet);
+}
+
+function initializeAssignmentSheet(sheet) {
+  const headers = ['ID', 'ชื่องาน', 'รายละเอียด', 'วิชา', 'กำหนดส่ง', 'นักเรียนที่ได้รับมอบหมาย', 'วันที่สร้าง'];
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  formatAssignmentSheet(sheet);
+}
+
+function initializeSubmissionSheet(sheet) {
+  const headers = ['ID', 'Assignment ID', 'Student ID', 'ชื่อไฟล์', 'URL ไฟล์', 'วันที่ส่ง', 'สถานะ'];
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  formatSubmissionSheet(sheet);
+}
+
+function formatGradeSheet(sheet) {
+  const range = sheet.getDataRange();
+  
+  // Header formatting
+  const headerRange = sheet.getRange(1, 1, 1, range.getNumColumns());
+  headerRange.setBackground('#4285f4');
+  headerRange.setFontColor('white');
+  headerRange.setFontWeight('bold');
+  headerRange.setHorizontalAlignment('center');
+  
+  // Data formatting
+  range.setBorder(true, true, true, true, true, true);
+  sheet.setFrozenRows(1);
+  sheet.autoResizeColumns(1, range.getNumColumns());
+}
+
+function formatAssignmentSheet(sheet) {
+  const range = sheet.getDataRange();
+  
+  // Header formatting
+  const headerRange = sheet.getRange(1, 1, 1, range.getNumColumns());
+  headerRange.setBackground('#34a853');
+  headerRange.setFontColor('white');
+  headerRange.setFontWeight('bold');
+  headerRange.setHorizontalAlignment('center');
+  
+  // Data formatting
+  range.setBorder(true, true, true, true, true, true);
+  sheet.setFrozenRows(1);
+  sheet.autoResizeColumns(1, range.getNumColumns());
+}
+
+function formatSubmissionSheet(sheet) {
+  const range = sheet.getDataRange();
+  
+  // Header formatting
+  const headerRange = sheet.getRange(1, 1, 1, range.getNumColumns());
+  headerRange.setBackground('#ff9900');
+  headerRange.setFontColor('white');
+  headerRange.setFontWeight('bold');
+  headerRange.setHorizontalAlignment('center');
+  
+  // Data formatting
+  range.setBorder(true, true, true, true, true, true);
+  sheet.setFrozenRows(1);
+  sheet.autoResizeColumns(1, range.getNumColumns());
+}
+
+function calculateAverage(grades) {
+  const validGrades = grades.filter(grade => grade !== '' && !isNaN(grade));
+  if (validGrades.length === 0) return 0;
+  return validGrades.reduce((sum, grade) => sum + parseFloat(grade), 0) / validGrades.length;
+}
+
+function getLetterGrade(average) {
+  if (average >= 80) return 'A';
+  if (average >= 70) return 'B';
+  if (average >= 60) return 'C';
+  if (average >= 50) return 'D';
+  return 'F';
+}
+
+// ฟังก์ชันสำหรับการทดสอบ
+function testCreateSampleData() {
+  try {
+    // สร้างข้อมูลตัวอย่างสำหรับ ม.4
+    const sampleGrades = {
+      grade: 'grade10',
+      grades: {
+        '70652368': {
+          'สอบกลางภาค': '85',
+          'สอบปลายภาค': '78',
+          'เก็บคะแนนบทที่ 1': '90',
+          'เก็บคะแนนบทที่ 2': '82'
+        },
+        '70652370': {
+          'สอบกลางภาค': '75',
+          'สอบปลายภาค': '80',
+          'เก็บคะแนนบทที่ 1': '85',
+          'เก็บคะแนนบทที่ 2': '78'
+        }
+      }
+    };
+    
+    saveGrades(sampleGrades);
+    
+    // สร้างงานตัวอย่าง
+    const sampleAssignment = {
+      grade: 'grade10',
+      title: 'งานเขียนเรียงความ',
+      description: 'เขียนเรียงความเรื่อง "ความสำคัญของการศึกษา"',
+      subject: 'ภาษาไทย',
+      dueDate: '2024-02-15',
+      selectedStudents: ['70652368', '70652370', '70652372']
+    };
+    
+    addAssignment(sampleAssignment);
+    
+    Logger.log('สร้างข้อมูลตัวอย่างเรียบร้อยแล้ว');
+  } catch (error) {
+    Logger.log('เกิดข้อผิดพลาด: ' + error.toString());
+  }
+}
+
+// ฟังก์ชันสำหรับการส่งอีเมลแจ้งเตือน
+function sendNotificationEmail(to, subject, body) {
+  try {
+    GmailApp.sendEmail(to, subject, body);
+    return true;
+  } catch (error) {
+    Logger.log('ไม่สามารถส่งอีเมลได้: ' + error.toString());
+    return false;
+  }
+}
+
+// ฟังก์ชันสำหรับการสำรองข้อมูล
+function backupData() {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const backupName = `Backup_Sophonwitty_${new Date().toISOString().split('T')[0]}`;
+    const backupFile = ss.copy(backupName);
+    
+    Logger.log('สำรองข้อมูลเรียบร้อยแล้ว: ' + backupFile.getUrl());
+    return backupFile.getUrl();
+  } catch (error) {
+    Logger.log('ไม่สามารถสำรองข้อมูลได้: ' + error.toString());
+    return null;
+  }
+}
+
+// ฟังก์ชันสำหรับการตั้งค่า Trigger อัตโนมัติ
+function setupTriggers() {
+  // สำรองข้อมูลทุกวันเที่ยงคืน
+  ScriptApp.newTrigger('backupData')
+    .timeBased()
+    .everyDays(1)
+    .atHour(0)
+    .create();
+    
+  Logger.log('ตั้งค่า Triggers เรียบร้อยแล้ว');
+}
+
+// ฟังก์ชันสำหรับการรายงานสถิติ
+function generateStatisticsReport() {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const grades = ['grade10', 'grade11', 'grade12'];
+    const report = {
+      totalStudents: 0,
+      gradeDistribution: { A: 0, B: 0, C: 0, D: 0, F: 0 },
+      averageScores: {},
+      assignmentStats: {}
+    };
+    
+    grades.forEach(grade => {
+      const students = STUDENTS_DATA[grade];
+      report.totalStudents += students.length;
+      
+      // คำนวณสถิติเกรด
+      const gradeSheet = ss.getSheetByName(`Grades_${grade}`);
+      if (gradeSheet) {
+        const data = gradeSheet.getDataRange().getValues();
+        for (let i = 1; i < data.length; i++) {
+          const letterGrade = data[i][data[i].length - 1];
+          if (report.gradeDistribution[letterGrade] !== undefined) {
+            report.gradeDistribution[letterGrade]++;
+          }
+        }
+      }
+      
+      // คำนวณสถิติงาน
+      const assignmentSheet = ss.getSheetByName(`Assignments_${grade}`);
+      if (assignmentSheet) {
+        const assignmentData = assignmentSheet.getDataRange().getValues();
+        report.assignmentStats[grade] = assignmentData.length - 1; // ลบ header
+      }
+    });
+    
+    Logger.log('รายงานสถิติ: ' + JSON.stringify(report, null, 2));
+    return report;
+  } catch (error) {
+    Logger.log('ไม่สามารถสร้างรายงานได้: ' + error.toString());
+    return null;
+  }
+}
